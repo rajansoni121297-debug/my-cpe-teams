@@ -23,20 +23,11 @@ const Login = ({ onLogin }: LoginProps) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const newErrors = validate();
-    setErrors(newErrors);
-
-    if (Object.keys(newErrors).length === 0) {
-      setIsSubmitting(true);
-      setTimeout(() => {
-        setIsSubmitting(false);
-        if (email === 'standalone' && password === 'standalone') {
-          if (onLogin) onLogin();
-        } else {
-          setErrors({ email: 'Invalid credentials', password: 'Invalid credentials' });
-        }
-      }, 1000);
-    }
+    setIsSubmitting(true);
+    setTimeout(() => {
+      setIsSubmitting(false);
+      onLogin();
+    }, 500);
   };
 
   return (

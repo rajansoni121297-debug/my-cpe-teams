@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
 * {
   margin: 0;
   padding: 0;
@@ -9,12 +11,20 @@ body {
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: #f5f6fa;
+  color: #333;
+  line-height: 1.5;
+}
+
+/* Smooth transitions globally */
+a, button, input, select, textarea {
+  transition: all 0.2s ease;
 }
 
 /* Global smooth scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -22,12 +32,12 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.12);
-  border-radius: 3px;
+  background: rgba(113, 98, 234, 0.15);
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(113, 98, 234, 0.3);
 }
 
 /* Smooth focus outlines for accessibility */
@@ -41,4 +51,9 @@ body {
 ::selection {
   background: rgba(113, 98, 234, 0.15);
   color: inherit;
+}
+
+/* Smooth page transitions */
+#root {
+  min-height: 100vh;
 }

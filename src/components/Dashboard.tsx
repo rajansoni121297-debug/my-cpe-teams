@@ -1,213 +1,286 @@
+import { useRef } from 'react';
 import './Dashboard.css';
 
-const quickAssignData = [
-  { name: 'QuickBooks - QBO', level: 'Intermediate', questions: '20 MCQs', duration: '40' },
-  { name: 'QuickBooks - QBO', level: 'Basic', questions: '20 MCQs', duration: '40' },
-  { name: 'CCH Axcess + ProSystem fx Audit Software', level: 'Basic', questions: '20 MCQs', duration: '40' },
-  { name: 'UltraTax Software', level: 'Basic', questions: '20 MCQs', duration: '40' },
-  { name: 'Lacerte Tax Software', level: 'Basic', questions: '20 MCQs', duration: '40' },
-  { name: 'Drake Tax Software', level: 'Basic', questions: '20 MCQs', duration: '40' },
+const notifications = [
+  { text: 'New assessment has been assigned : NPO Audit', time: 'March 13, 2026 | 05:49 PM IST', isNew: true },
+  { text: 'New assessment has been assigned : NPO Audit', time: 'March 13, 2026 | 05:46 PM IST', isNew: true },
+  { text: 'New assessment has been assigned : Accounting Fu...', time: 'March 11, 2026 | 11:36 PM IST', isNew: true },
+  { text: 'New assessment has been assigned : Data Interpret...', time: 'March 11, 2026 | 08:40 PM IST', isNew: true },
+  { text: 'New assessment has been assigned : Single Audit a...', time: 'March 11, 2026 | 08:37 PM IST', isNew: true },
 ];
 
-const recentActivities = [
-  { user: 'Manvi Jain', action: 'submitted', assessment: 'Governmental Accounting and Financial Reporting', time: 'March 19, 2026 | 04:54 PM IST' },
-  { user: 'Manvi Jain', action: 'Viewed', assessment: 'Governmental Accounting and Financial Reporting', time: 'March 19, 2026 | 04:52 PM IST' },
-  { user: 'Manvi Jain', action: 'submitted', assessment: 'Drake Tax Software', time: 'March 19, 2026 | 04:52 PM IST' },
-  { user: 'Ethan Parker', action: 'submitted', assessment: 'NPO Audit', time: 'March 17, 2026 | 03:24 PM IST' },
-  { user: 'Andrew Malcham', action: 'submitted', assessment: 'Governmental Accounting and Financial Reporting', time: 'March 17, 2026 | 03:24 PM IST' },
+const topCourses = [
+  { name: 'Financial Analysis and Readiness Asses...', learners: 3 },
+  { name: 'Building Resilient Portfolios: Mitigat...', learners: 2 },
+  { name: 'Buy Low, Sell High. Why is it so Diffi...', learners: 2 },
+  { name: 'Behavioral Finance: How to Bring Your...', learners: 2 },
+  { name: 'Are Your Clients Financially Healthy?...', learners: 2 },
+  { name: 'An Overview of Financial Planning – De...', learners: 2 },
+  { name: 'Advisors Guide to an Advanced Look at...', learners: 2 },
+  { name: 'Advisors Guide to Serving The Next Gen...', learners: 2 },
+  { name: 'A Million Dollar Baby', learners: 2 },
+  { name: 'Personal Finance – What are Crypto Ass...', learners: 2 },
+  { name: 'Personal Finance Trends Mastery', learners: 2 },
+  { name: '10-Point Financial Health Check', learners: 2 },
+  { name: 'AI and Real Estate: Your Winning Inves...', learners: 2 },
+  { name: 'A to Z of Time Value of Money', learners: 2 },
+  { name: 'AI and Personal Finance: Best Alternat...', learners: 2 },
 ];
 
-const topPerformers = [
-  { rank: 1, name: 'Ethan Parker', score: 95, assessment: 'NPO Audit' },
-  { rank: 2, name: 'Andrew Malcham', score: 88, assessment: 'Governmental Accounting' },
-  { rank: 3, name: 'Priya Sharma', score: 85, assessment: 'QuickBooks - QBO' },
-  { rank: 4, name: 'David Chen', score: 82, assessment: 'UltraTax Software' },
-  { rank: 5, name: 'Manvi Jain', score: 78, assessment: 'Drake Tax Software' },
+const spotlightCourses = [
+  'Maximizing Your Tax Advantage: The Fringe Benefits Route in 2024-25',
+  'Gambling, Gifts & Awards Tax Issues Under OBBB For 2026',
+  'Military Tax Traps: Common Errors That Trigger Audits',
+  'Easing Commercial Loan Approvals',
+  'Understanding IRS Audit Triggers for Small Business',
+  'Tax Planning Strategies for High Net Worth Individuals',
 ];
 
-const upcomingDeadlines = [
-  { name: 'Rajan Soni', date: 'Apr 18, 2026' },
-  { name: 'Priya Sharma', date: 'Apr 22, 2026' },
-  { name: 'David Chen', date: 'Apr 25, 2026' },
-  { name: 'Ethan Parker', date: 'May 01, 2026' },
-  { name: 'Andrew Malcham', date: 'May 10, 2026' },
+const quickLinks = [
+  'Learning Dashboard', 'Billing', 'Support', 'Firm Compliance',
+  'Course Creation', 'Content Assignment', 'Learning Plans',
 ];
-
-const assessmentStats = [
-  { label: 'Total Assessments', value: '24', color: '#7162EA' },
-  { label: 'Avg Score', value: '76%', color: '#16a34a' },
-  { label: 'Pass Rate', value: '40%', color: '#ea580c' },
-];
-
-const rankColors = ['#FFD700', '#C0C0C0', '#CD7F32'];
-
-const getInitials = (name: string) =>
-  name.split(' ').map((n) => n[0]).join('').toUpperCase();
 
 interface DashboardProps {
   onNavigate: (screen: string) => void;
 }
 
 const Dashboard = ({ onNavigate }: DashboardProps) => {
+  const spotlightRef = useRef<HTMLDivElement>(null);
+
+  const scrollSpotlight = (direction: 'up' | 'down') => {
+    if (spotlightRef.current) {
+      const amount = direction === 'up' ? -120 : 120;
+      spotlightRef.current.scrollBy({ top: amount, behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className="dashboard">
       <h1 className="dashboard-title">Dashboard</h1>
 
-      <div className="dashboard-grid">
-        {/* Left Column */}
-        <div className="dashboard-left">
-          {/* Completion Rate Card */}
-          <div className="dash-card">
-            <h2 className="dash-card-title">Completion Rate</h2>
-            <div className="completion-stats">
-              <div className="stat-item">
-                <span className="stat-label">Total Assigned</span>
-                <span className="stat-value">8</span>
-              </div>
-              <div className="stat-item">
-                <span className="stat-label">Finished</span>
-                <span className="stat-value stat-green">6 <span className="stat-pct">(75%)</span></span>
-              </div>
-              <div className="stat-item">
-                <span className="stat-label">Pending</span>
-                <span className="stat-value stat-orange">2 <span className="stat-pct">(25%)</span></span>
-              </div>
-            </div>
-
-            <div className="outcome-section">
-              <h3 className="outcome-title">Outcome of 6 Finished Users</h3>
-              <div className="outcome-bars">
-                <div className="outcome-row">
-                  <span className="outcome-label outcome-label-pass">Pass</span>
-                  <div className="outcome-bar-track">
-                    <div className="outcome-bar outcome-bar-green" style={{ width: '0%' }}></div>
-                  </div>
-                  <span className="outcome-count">0</span>
-                </div>
-                <div className="outcome-row">
-                  <span className="outcome-label outcome-label-fail">Failed</span>
-                  <div className="outcome-bar-track">
-                    <div className="outcome-bar outcome-bar-red" style={{ width: '100%' }}></div>
-                  </div>
-                  <span className="outcome-count">10</span>
-                </div>
-              </div>
-            </div>
+      {/* Row 1: Learning Analytics, Firm Compliance, Notifications */}
+      <div className="dash-row dash-row-3">
+        {/* Learning Analytics */}
+        <div className="dash-card">
+          <div className="dash-card-title-bar">
+            <h2 className="dash-card-title">Learning Analytics</h2>
           </div>
-
-          {/* Quick Assign Card */}
-          <div className="dash-card">
-            <div className="dash-card-header">
-              <h2 className="dash-card-title">Quick Assign</h2>
-              <button className="btn-view-all" onClick={() => onNavigate('assessments')}>View All</button>
+          <div className="dash-card-body">
+            <div className="analytics-stats">
+              <div className="analytics-stat-item">
+                <span className="analytics-stat-value">380.7 Hours</span>
+                <span className="analytics-stat-label">Total Learning Hours</span>
+              </div>
+              <div className="analytics-stat-item">
+                <span className="analytics-stat-value">190 Hours</span>
+                <span className="analytics-stat-label">Avg. Hours per User</span>
+              </div>
+              <div className="analytics-stat-item">
+                <span className="analytics-stat-value">17%</span>
+                <span className="analytics-stat-label">Completion Rate</span>
+              </div>
             </div>
-            <div className="quick-assign-table-wrap">
-              <table className="quick-assign-table">
-                <thead>
-                  <tr>
-                    <th>Assessment Name</th>
-                    <th>Level</th>
-                    <th>Questions</th>
-                    <th>Duration (Min)</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {quickAssignData.map((item, idx) => (
-                    <tr key={idx}>
-                      <td><span className="link-text">{item.name}</span></td>
-                      <td>{item.level}</td>
-                      <td>{item.questions}</td>
-                      <td>{item.duration}</td>
-                      <td><span className="link-purple">Assign</span></td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {/* Top Performers Card */}
-          <div className="dash-card">
-            <div className="dash-card-header">
-              <h2 className="dash-card-title">Top Performers</h2>
-              <button className="btn-view-all" onClick={() => onNavigate('reports')}>View All</button>
-            </div>
-            <div className="performers-list">
-              {topPerformers.map((p) => (
-                <div className="performer-item" key={p.rank}>
-                  <span className="performer-rank" style={{ color: rankColors[p.rank - 1] || '#aaa' }}>
-                    #{p.rank}
-                  </span>
-                  <div className="performer-avatar">{getInitials(p.name)}</div>
-                  <div className="performer-info">
-                    <span className="performer-name">{p.name}</span>
-                    <span className="performer-assessment">{p.assessment}</span>
-                  </div>
-                  <span className="performer-score">{p.score}%</span>
-                </div>
-              ))}
+            <div className="top-learners">
+              <h3 className="top-learners-title">Top Learners</h3>
+              <div className="top-learner-row">
+                <span className="top-learner-name">Thomas Anderson</span>
+                <span className="top-learner-hours">65.5 Hours</span>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Right Column */}
-        <div className="dashboard-right">
-          {/* Recent Activity Card */}
-          <div className="dash-card">
-            <div className="dash-card-header">
-              <h2 className="dash-card-title">Recent Activity</h2>
-              <button className="btn-view-all" onClick={() => onNavigate('reports')}>View All</button>
-            </div>
-            <div className="activity-list">
-              {recentActivities.map((item, idx) => (
-                <div className="activity-item" key={idx}>
-                  <div className="activity-content">
-                    <p className="activity-text">
-                      <span className="link-text">{item.user}</span>
-                      {' '}{item.action}{' '}
-                      <span className="link-text">{item.assessment}</span>
-                    </p>
-                    <span className="activity-time">{item.time}</span>
+        {/* Firm Compliance */}
+        <div className="dash-card">
+          <div className="dash-card-title-bar">
+            <h2 className="dash-card-title">Firm Compliance</h2>
+          </div>
+          <div className="dash-card-body">
+            <div className="compliance-content">
+              <div className="compliance-chart">
+                <svg viewBox="0 0 140 140" className="donut-chart">
+                  <circle cx="70" cy="70" r="56" fill="none" stroke="#e8e8ee" strokeWidth="14" />
+                  <circle cx="70" cy="70" r="56" fill="none" stroke="#7162EA" strokeWidth="14"
+                    strokeDasharray="0 352" strokeLinecap="round"
+                    transform="rotate(-90 70 70)" />
+                  <text x="70" y="70" textAnchor="middle" dominantBaseline="central"
+                    className="donut-text">0%</text>
+                </svg>
+              </div>
+              <div className="compliance-details">
+                <div className="compliance-row">
+                  <span className="compliance-dot compliant"></span>
+                  <span className="compliance-label">Compliant</span>
+                  <span className="compliance-value">0 Users</span>
+                </div>
+                <div className="compliance-row">
+                  <span className="compliance-dot non-compliant"></span>
+                  <span className="compliance-label">Non-Compliant</span>
+                  <span className="compliance-value">2 Users</span>
+                </div>
+                <div className="compliance-rate-row">
+                  <span className="compliance-label">Compliance Rate</span>
+                  <span className="compliance-value">0%</span>
+                </div>
+                <div className="compliance-deadlines">
+                  <h4 className="deadlines-title">Upcoming Deadlines:</h4>
+                  <div className="deadline-row">
+                    <span>Alaska - CPA(US)</span>
+                    <span>31 Dec, 2027</span>
                   </div>
                 </div>
-              ))}
+              </div>
             </div>
           </div>
+        </div>
 
-          {/* Upcoming Deadlines Card */}
-          <div className="dash-card">
-            <div className="dash-card-header">
-              <h2 className="dash-card-title">Upcoming Deadlines</h2>
+        {/* Notifications */}
+        <div className="dash-card dash-card-notifications">
+          <div className="dash-card-title-bar">
+            <h2 className="dash-card-title notification-title">Notifications</h2>
+          </div>
+          <div className="dash-card-body dash-card-body-flex">
+            <div className="notifications-list">
+              {notifications.map((n, idx) => (
+                <div className="notification-item" key={idx}>
+                  <div className="notification-text-wrap">
+                    <span className="notification-text">{n.text}</span>
+                    {n.isNew && <span className="notification-badge">New</span>}
+                  </div>
+                  <span className="notification-time">{n.time}</span>
+                </div>
+              ))}
+            </div>
+            <div className="notifications-footer">
+              <div className="powered-by">
+                Powered by
+                <span className="powered-brand"> <strong>MYCPE</strong> ONE</span>
+              </div>
               <button className="btn-view-all">View All</button>
             </div>
-            <div className="deadline-list">
-              {upcomingDeadlines.map((d, idx) => (
-                <div className="deadline-item" key={idx}>
-                  <span className="deadline-name">{d.name}</span>
-                  <span className="deadline-date">{d.date}</span>
-                  <button className="action-icon-btn" title="View">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7162EA" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                      <polyline points="14 2 14 8 20 8"></polyline>
-                      <line x1="16" y1="13" x2="8" y2="13"></line>
-                      <line x1="16" y1="17" x2="8" y2="17"></line>
+          </div>
+        </div>
+      </div>
+
+      {/* Row 2: Course Performance, Course in Spotlight, Subscription Overview */}
+      <div className="dash-row dash-row-3">
+        {/* Course Performance */}
+        <div className="dash-card">
+          <div className="dash-card-title-bar">
+            <h2 className="dash-card-title">Course Performance</h2>
+          </div>
+          <div className="dash-card-body">
+            <div className="course-perf-table">
+              <div className="course-perf-header">
+                <span>Top Performing Courses</span>
+                <span>Learners</span>
+              </div>
+              <div className="course-perf-body">
+                {topCourses.map((c, idx) => (
+                  <div className="course-perf-row" key={idx}>
+                    <span className="course-name">{c.name}</span>
+                    <span className="course-learners">{c.learners}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Course in Spotlight */}
+        <div className="dash-card">
+          <div className="dash-card-title-bar">
+            <h2 className="dash-card-title">Course in Spotlight</h2>
+          </div>
+          <div className="dash-card-body spotlight-body">
+            <button className="spotlight-scroll-btn spotlight-scroll-up" onClick={() => scrollSpotlight('up')}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="18 15 12 9 6 15" />
+              </svg>
+            </button>
+            <div className="spotlight-list" ref={spotlightRef}>
+              {spotlightCourses.map((course, idx) => (
+                <div className="spotlight-item" key={idx}>
+                  <div className="spotlight-tag">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#e53e3e" strokeWidth="2">
+                      <rect x="2" y="3" width="20" height="14" rx="2" /><line x1="8" y1="21" x2="16" y2="21" />
+                      <line x1="12" y1="17" x2="12" y2="21" />
                     </svg>
-                  </button>
+                    <span>Upcoming Live Webinar</span>
+                  </div>
+                  <p className="spotlight-course-name">{course}</p>
                 </div>
               ))}
             </div>
+            <button className="spotlight-scroll-btn spotlight-scroll-down" onClick={() => scrollSpotlight('down')}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </button>
           </div>
+        </div>
 
-          {/* Assessment Stats Card */}
-          <div className="dash-card">
-            <h2 className="dash-card-title" style={{ marginBottom: '16px' }}>Assessment Statistics</h2>
-            <div className="assessment-stats-grid">
-              {assessmentStats.map((s) => (
-                <div className="assessment-stat-item" key={s.label}>
-                  <span className="assessment-stat-value" style={{ color: s.color }}>{s.value}</span>
-                  <span className="assessment-stat-label">{s.label}</span>
+        {/* Subscription Overview */}
+        <div className="dash-card">
+          <div className="dash-card-title-bar">
+            <h2 className="dash-card-title">Subscription Overview</h2>
+          </div>
+          <div className="dash-card-body">
+            <div className="subscription-content">
+              <div className="subscription-chart">
+                <svg viewBox="0 0 140 140" className="donut-chart">
+                  <circle cx="70" cy="70" r="56" fill="none" stroke="#e8e8ee" strokeWidth="14" />
+                  <circle cx="70" cy="70" r="56" fill="none" stroke="#7162EA" strokeWidth="14"
+                    strokeDasharray="39 313" strokeLinecap="round"
+                    transform="rotate(-90 70 70)" />
+                  <text x="70" y="70" textAnchor="middle" dominantBaseline="central"
+                    className="donut-text donut-text-lg">18</text>
+                </svg>
+              </div>
+              <div className="subscription-details">
+                <div className="sub-row">
+                  <span>Total Users</span>
+                  <span className="sub-value">18</span>
                 </div>
+                <div className="sub-row">
+                  <span><span className="sub-dot active-dot"></span>Active Users</span>
+                  <span className="sub-value">2</span>
+                </div>
+                <div className="sub-row">
+                  <span><span className="sub-dot inactive-dot"></span>Inactive Users</span>
+                  <span className="sub-value">16</span>
+                </div>
+                <div className="sub-row">
+                  <span><span className="sub-dot invited-dot"></span>Invited Users</span>
+                  <span className="sub-value">0</span>
+                </div>
+                <div className="sub-row sub-validity">
+                  <span>Subscription Validity</span>
+                  <span className="sub-value">Expires on 01 Jun, 2026</span>
+                </div>
+                <div className="sub-row">
+                  <span>Renewal In</span>
+                  <span className="sub-value sub-value-highlight">70 days</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Row 3: Quick Links */}
+      <div className="dash-row">
+        <div className="dash-card dash-card-full">
+          <div className="dash-card-title-bar">
+            <h2 className="dash-card-title">Quick Links</h2>
+          </div>
+          <div className="dash-card-body">
+            <div className="quick-links">
+              {quickLinks.map((link, idx) => (
+                <button className="quick-link-btn" key={idx} onClick={() => onNavigate('dashboard')}>
+                  {link}
+                </button>
               ))}
             </div>
           </div>
