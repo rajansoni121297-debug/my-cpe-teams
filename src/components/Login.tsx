@@ -14,7 +14,7 @@ const Login = ({ onLogin }: LoginProps) => {
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const validate = () => {
+  const = () => {
     const newErrors: { email?: string; password?: string } = {};
     if (!email.trim()) newErrors.email = 'Email is required';
     if (!password.trim()) newErrors.password = 'Password is required';
