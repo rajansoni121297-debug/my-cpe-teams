@@ -14,21 +14,29 @@ const Login = ({ onLogin }: LoginProps) => {
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const = () => {
-    const newErrors: { email?: string; password?: string } = {};
-    if (!email.trim()) newErrors.email = 'Email is required';
-    if (!password.trim()) newErrors.password = 'Password is required';
-    return newErrors;
-  };
+  const validate = () => {
+  const newErrors: { email?: string; password?: string } = {};
+  if (!email.trim()) newErrors.email = 'Email is required';
+  if (!password.trim()) newErrors.password = 'Password is required';
+  return newErrors;
+};
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
-      onLogin();
-    }, 500);
-  };
+  e.preventDefault();
+
+  const validationErrors = validate();
+  setErrors(validationErrors);
+
+  if (validationErrors.email || validationErrors.password) {
+    return;
+  }
+
+  setIsSubmitting(true);
+  setTimeout(() => {
+    setIsSubmitting(false);
+    onLogin();
+  }, 500);
+};
 
   return (
     <div className="login-page">
